@@ -1,4 +1,5 @@
-# Getting Started with Create React App
+# STOCK TRACKER APP
+This project pulls in an API from https://iexcloud.io/ to display the latest stock information for companies the user chooses to follow.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

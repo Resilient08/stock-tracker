@@ -12,15 +12,33 @@ class StockRow extends Component {
     constructor (props) { //props allows characteristics to be passed through objects
         super(props) //calls the component
         this.state = {
-            data: {}
+            price: null,
+            date: null,
+            time: null,
+            dollar_change: null,
+            percent_change: null
+            
         }
     }
 
-    applyData(data) {
-        this.setState({ //The setState function "changes" the state (in this case, the data)
-        data: data
-    })
+    applyData(data) { 
+        console.log (data)
+        this.setState({ 
+            price: data.price.toFixed(2),
+            date: data.date,
+            time: data.time,
+        });//The setState function "changes" the state (in this case, the data)  
+        stock.getYesterdaysClose(this.props.ticker, data.date, (yesterday) => {
+            console.log(this.props.ticker, yesterday)
+            const dollar_change = (data.price - yesterday.price).toFixed(2);
+            const percent_change = (100 * dollar_change / yesterday.price).toFixed(2);
+            this.setState({
+                dollar_change: `${dollar_change}`,
+                percent_change: ` (${percent_change}%)`
+            })
+        })
     }
+
 
     componentDidMount() { //Lifecycle event once component has loaded.  This is triggered whenever the page has loaded.
         //query the API
@@ -35,9 +53,10 @@ class StockRow extends Component {
     render() {
         return ( //this.state - when the state changes, data that is dislayed changes
             <li className="list-group-item">
-            <b>{this.props.ticker}</b> ${this.state.data.price}
+            <b>{this.props.ticker}</b> ${this.state.price}
             <span className="change" style={changeStyle}>
-              +12.34  (5.3%)
+              {this.state.dollar_change}
+              {this.state.percent_change}
             </span>
             </li>
         

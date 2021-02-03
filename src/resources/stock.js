@@ -2,14 +2,15 @@ import {iex} from '../config/iex.js';
 
 export const stock = {
     latestPrice: (ticker, callback) => {
-        const url = 
+        //const url = 
         fetch(stock.latestPriceURL(ticker))
         .then((response) => response.json())
         .then((data) => callback(stock.formatPriceData(data)))
     },
 
     latestPriceURL: (ticker) => {
-       return  `${iex.base_url}/stock/${ticker}/intraday-prices?chartLast=1&token=${iex.api_token}`
+       return  `${iex.base_url}/stock/${ticker}
+       /intraday-prices?chartLast=1&token=${iex.api_token}`
     },
 
     formatPriceData: (data) => {
@@ -19,8 +20,19 @@ export const stock = {
             formattedData.date = stockData.date
             formattedData.time = stockData.label
             return formattedData
-    }
+    },
 
+getYesterdaysClose: (ticker, date, callback) => {
+    fetch(stock.yesterdaysCloseURL(ticker, date))
+    .then((response) => response.json())
+    .then((data) => callback(stock.formatPriceData(data)))
+},
 
+yesterdaysCloseURL: (ticker, date) => {
+    return  `${iex.base_url}/stock/${ticker}
+    /intraday-prices?chartLast=1&exactDate=20210202&token=${iex.api_token}`
+    //&exactDate=20210202
+
+}
 
 }

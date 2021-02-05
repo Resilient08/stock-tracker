@@ -9,8 +9,7 @@ export const stock = {
     },
 
     latestPriceURL: (ticker) => {
-       return  `${iex.base_url}/stock/${ticker}
-       /intraday-prices?chartLast=1&token=${iex.api_token}`
+       return  `${iex.base_url}/stock/${ticker}/intraday-prices?chartLast=1&token=${iex.api_token}`
     },
 
     formatPriceData: (data) => {
@@ -22,41 +21,16 @@ export const stock = {
             return formattedData
     },
 
-getYesterdaysClose: (ticker, lastTradingDate, callback) => {
-    //stock.getLastTradingDate(date).then((data) => {
-    if (lastTradingDate != ""  && lastTradingDate != undefined) { 
-    fetch(stock.yesterdaysCloseURL(ticker, stock.formatDate(lastTradingDate)))
+getYesterdaysClose: (ticker, date, callback) => {
+    fetch(stock.yesterdaysCloseURL(ticker, date))
     .then((response) => response.json())
     .then((data) => callback(stock.formatPriceData(data)))
-    //}) 
-    } 
 },
 
-getLastTradingDate: () => {
-    const today = new Date().toISOString().split('T') [0].replace(/-/g, '');
-    const url =  `${iex.base_url}/ref-data/us/dates/trade/last/1/${today}?token=${iex.api_token}`
-    return fetch(url).then((res) => res.json());
-},
-
-yesterdaysCloseURL: (ticker, lastTradingDate) => {
-    // var today =   * this section moved above
-    // Date(date).toISOString().split('T') [0].replace(/-/g, '')
-    // console.log(today)
-
-    // const url =  `${iex.base_url}/ref-data/us/dates/trade/last/1/${today}?token=${iex.api_token}`
-    // console.log(url)
-
-    // fetch(url).then((res) => res.json()).then(console.log)
-
-    //var lastTradingDate = stock.formatDate(date);
-    return  `${iex.base_url}/stock/${ticker}
-    /intraday-prices?chartLast=1&exactDate=${lastTradingDate}&token=${iex.api_token}`
+yesterdaysCloseURL: (ticker, date) => {
+    return  `${iex.base_url}/stock/${ticker}/intraday-prices?chartLast=1&exactDate=20210204&token=${iex.api_token}`
     //&exactDate=20210202
 
-},
-
-formatDate: (date) => {
-     return new Date(date).toISOString().split('T') [0].replace(/-/g, '');
 }
 
 }

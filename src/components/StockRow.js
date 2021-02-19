@@ -27,38 +27,35 @@ class StockRow extends Component {
       }
 
     applyData(data) { 
-       console.log(data)
+
+        const formattedPrice = (data.price == undefined) ? null : data.price.toFixed(2)
+
         this.setState({ 
-            price: data.price.toFixed(2),
+            price: formattedPrice,
             date: data.date,
             time: data.time,
         });
-        stock.getYesterdaysClose(this.props.ticker, data.date, (yesterday) => {
-            const dollar_change = (data.price - yesterday.price).toFixed(2);
-            const percent_change = (100 * dollar_change / yesterday.price).toFixed(1);
-
-            this.setState({
-                dollar_change: `${dollar_change}`,
-                percent_change: ` (${percent_change}%)`
-            })
-        })
     }
 
 
     componentDidMount() { 
-       
-        // const url = `${iex.base_url}/stock/${this.props.ticker}/intraday-prices?chartLast=1&token=${iex.api_token}`
-
-        //      fetch(url)
-        //      .then((response) => response.json())
-        //      .then((data) => {
-        //         console.log(data)
-        //         this.setState({
-        //             data: data[data.length - 1]
-        //         })
-        //      }) 
 
          stock.latestPrice(this.props.ticker, this.applyData.bind(this)) //research why .bind makes work  
+     }
+
+     componentDidUpdate(prevProps) {
+         if (prevProps.lastTradingDate == null) {
+            stock.getYesterdaysClose(this.props.ticker, this.props.lastTradingDate, (yesterday) => {
+                const dollar_change = (this.state.price - yesterday.price).toFixed(2);
+                const percent_change = (100 * dollar_change / yesterday.price).toFixed(1);
+    
+                this.setState({
+                    dollar_change: `${dollar_change}`,
+                    percent_change: ` (${percent_change}%)`
+                })
+            })
+         }
+        
      }
 
     render() {
